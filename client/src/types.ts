@@ -1,0 +1,2 @@
+export type Player={id:number;username:string;coins:number;wins:number;losses:number;gamesPlayed:number;shooting:number;speed:number;defense:number;dribbling:number;strength:number;stamina:number;hair:string;height:number;clothing:string;build:string;difficulty:string;championshipsWon:number;tutorialDone:boolean};
+export type Opponent={id:number;name:string;shooting:number;speed:number;defense:number;dribbling:number;strength:number;stamina:number;hair:string;clothing:string};
