@@ -1,1 +1,4 @@
-tgtgrtgtr
+Token - eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJwVmdmeFlGZ0VmR2k5S0xqOUZKRkVnIiwib3JnX2lkIjoxMDAwMjAyNjg5fQ.WUoAqaB1lf6k07BoGJnoG1uE27gxqweTDs0-6bOxz88quD1E8lqXt6Ch4TwH2mrUqlWJEAfToP6IQqiO-cdxAQ
+
+URL -
+libsql://dasketball-dkxi.aws-us-east-2.turso.io
