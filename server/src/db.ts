@@ -4,5 +4,10 @@ db.exec(`CREATE TABLE IF NOT EXISTS players(id INTEGER PRIMARY KEY AUTOINCREMENT
 CREATE TABLE IF NOT EXISTS opponents(id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT,shooting INTEGER,speed INTEGER,defense INTEGER,dribbling INTEGER,strength INTEGER,stamina INTEGER,hair TEXT,clothing TEXT);
 CREATE TABLE IF NOT EXISTS matches(id INTEGER PRIMARY KEY AUTOINCREMENT,playerId INTEGER,opponentId INTEGER,result TEXT,score TEXT,createdAt TEXT DEFAULT CURRENT_TIMESTAMP,FOREIGN KEY(playerId) REFERENCES players(id),FOREIGN KEY(opponentId) REFERENCES opponents(id));
 CREATE TABLE IF NOT EXISTS inventory(id INTEGER PRIMARY KEY AUTOINCREMENT,playerId INTEGER,item TEXT,UNIQUE(playerId,item));`);
+// Existing databases are migrated in place without discarding career data.
+const playerColumns=db.prepare('PRAGMA table_info(players)').all()as any[];
+if(!playerColumns.some(column=>column.name==='playoffGames')){
+  db.exec('ALTER TABLE players ADD COLUMN playoffGames INTEGER DEFAULT 0');
+}
 const count=(db.prepare('SELECT COUNT(*) n FROM opponents').get()as any).n;if(!count){const add=db.prepare('INSERT INTO opponents(name,shooting,speed,defense,dribbling,strength,stamina,hair,clothing) VALUES(?,?,?,?,?,?,?,?,?)');const names=['Jax Voltage','Milo Buckets','Trey Nova','Ace Wilder','Zion Sparks','Kobe Cruz','Dante Frost','Rio Blaze'];const tx=db.transaction(()=>names.forEach((n,i)=>add.run(n,64+i*3,72+i*2,62+i*3,67+i*2,63+i*2,70+i,'curls',i%2?'orange':'cyan')));tx()}
 export const publicPlayer=(p:any)=>{const{password,...safe}=p;return{...safe,tutorialDone:Boolean(safe.tutorialDone)}};
