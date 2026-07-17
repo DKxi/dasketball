@@ -1,5 +1,13 @@
 const isVercel=Boolean(process.env.VERCEL);
-if(isVercel&&!process.env.TURSO_DATABASE_URL)throw new Error('TURSO_DATABASE_URL is required on Vercel');
+const cleanEnv=(value:string|undefined)=>{
+  const trimmed=value?.trim();
+  if(!trimmed)return undefined;
+  const quoted=(trimmed.startsWith('"')&&trimmed.endsWith('"'))||(trimmed.startsWith("'")&&trimmed.endsWith("'"));
+  return quoted?trimmed.slice(1,-1).trim():trimmed;
+};
+const databaseUrl=cleanEnv(process.env.TURSO_DATABASE_URL);
+const authToken=cleanEnv(process.env.TURSO_AUTH_TOKEN);
+if(isVercel&&(!databaseUrl||!authToken))throw new Error('TURSO_DATABASE_URL and TURSO_AUTH_TOKEN are required on Vercel');
 
 // Vercel only connects to the remote Turso database. The web entry point uses
 // HTTP/WebSockets and does not load libsql's optional native Linux binary.
@@ -9,8 +17,8 @@ const {createClient}=isVercel
   : await import('@libsql/client');
 
 export const db=createClient({
-  url:process.env.TURSO_DATABASE_URL||'file:dasketball.db',
-  authToken:process.env.TURSO_AUTH_TOKEN,
+  url:databaseUrl||'file:dasketball.db',
+  authToken,
 });
 
 export const ready=(async()=>{
