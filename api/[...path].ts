@@ -1,4 +1,8 @@
-// One catch-all Function keeps the Express application in a single bundle and
-// preserves request paths such as /api/signup and /api/playoffs/start.
-import app from '../server/src/index.js';
-export default app;
+// Replace the old require() line with this:
+export default async function handler(req, res) {
+  const server = await import('../server/src/index.js');
+  
+  // If your server exports a default handler, invoke it like this:
+  return server.default(req, res);
+}
+
