@@ -1,7 +1,12 @@
-import { createClient } from '@libsql/client';
-
 const isVercel=Boolean(process.env.VERCEL);
 if(isVercel&&!process.env.TURSO_DATABASE_URL)throw new Error('TURSO_DATABASE_URL is required on Vercel');
+
+// Vercel only connects to the remote Turso database. The web entry point uses
+// HTTP/WebSockets and does not load libsql's optional native Linux binary.
+// Keep the Node entry point locally so file:dasketball.db continues to work.
+const {createClient}=isVercel
+  ? await import('@libsql/client/web')
+  : await import('@libsql/client');
 
 export const db=createClient({
   url:process.env.TURSO_DATABASE_URL||'file:dasketball.db',
