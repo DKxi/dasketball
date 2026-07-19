@@ -1,8 +1,18 @@
-// Replace the old require() line with this:
-export default async function handler(req, res) {
-  const server = await import('../server/src/index.js');
-  
-  // If your server exports a default handler, invoke it like this:
-  return server.default(req, res);
+import app from '../server/src/index.js';
+
+export const config = {
+  runtime: 'nodejs',
+};
+
+function normalizeUrl(req: { url?: string }) {
+  const url = req.url ?? '/';
+  if (url === '/api') return '/';
+  if (url.startsWith('/api/')) return url.slice(4) || '/';
+  return url;
 }
 
+export default function handler(req: any, res: any) {
+  req.url = normalizeUrl(req);
+  req.originalUrl = req.url;
+  return app(req as any, res as any);
+}
